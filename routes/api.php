@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,5 +23,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/register', [RegisterController::class, 'create']);
 Route::post('/login', [AuthController::class, 'autorization']);
+Route::get('/products', [ProductController::class, 'all']);
 
-Route::post('/logout', [AuthController::class, 'logout']);
+Route::group(['middleware' => 'user'], function (){
+    Route::post('/logout', [AuthController::class, 'logout']);
+});
+
+Route::group(['middleware' => 'admin'], function (){
+    Route::post('/add_product', [ProductController::class, 'add_product']);
+    Route::post('/delete_product/{id}', [ProductController::class, 'delete_product']);
+    Route::post('/edit_product/{id}', [ProductController::class, 'edit_product']);    
+});
