@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Http\Request;
@@ -27,10 +28,12 @@ Route::get('/products', [ProductController::class, 'all']);
 
 Route::group(['middleware' => 'user'], function (){
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/cart', [CartController::class, 'all']);
+    Route::post('/add_cart/{id}', [CartController::class, 'add_cart']); 
 });
 
 Route::group(['middleware' => 'admin'], function (){
     Route::post('/add_product', [ProductController::class, 'add_product']);
     Route::post('/delete_product/{id}', [ProductController::class, 'delete_product']);
-    Route::post('/edit_product/{id}', [ProductController::class, 'edit_product']);    
+    Route::post('/edit_product/{id}', [ProductController::class, 'edit_product']);
 });
