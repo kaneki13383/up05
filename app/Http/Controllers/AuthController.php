@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Termwind\Components\Dd;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Config;
 
 class AuthController extends Controller
 {
@@ -21,19 +17,30 @@ class AuthController extends Controller
             DB::table('users')->where('email',$request->input('email'))->update([
                 'token' => str_shuffle($permitted_chars)
             ]);
-            Config::set('app.user', $user);
-            return $user;
+
+            $user = DB::table('users')->where('email',$request->input('email'))->get()->first();
+
+            return response(json_encode([
+                'token' => $user->token,
+            ]));
         }
         else{
             return response(json_encode([
-                'message' => 'Не правильный пароль или email',
-                'code' => 403
-            ]), 403);
+                'message' => 'Неудачный вход',
+                'code' => 401
+            ]), 401);
         }
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        dd(Config::get('app.user'));
+        DB::table('users')->where('token', $request->input('token'))->update([
+            'token' => 'NULL'
+        ]);
+
+        return response(json_encode([
+            'message' => 'Вы вышли из аккаунта',
+            'code' => 200
+        ]));
     }
 }
