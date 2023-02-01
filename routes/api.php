@@ -29,7 +29,8 @@ Route::get('/products', [ProductController::class, 'all']);
 Route::group(['middleware' => 'user'], function (){
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/cart', [CartController::class, 'all']);
-    Route::post('/add_cart/{id}', [CartController::class, 'add_cart']); 
+    Route::post('/add_cart/{id}', [CartController::class, 'add_cart']);
+    Route::post('/del_cart/{id}', [CartController::class, 'del_cart']);
 });
 
 Route::group(['middleware' => 'admin'], function (){
