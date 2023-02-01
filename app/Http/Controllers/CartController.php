@@ -17,7 +17,7 @@ class CartController extends Controller
         return DB::table('carts')
             ->join('products', 'carts.id_product', '=', 'products.id')
             ->where('id_user',$id_user->id)
-            ->select('products.*')->get();
+            ->select('products.*', 'carts.summ')->get();
     }
 
     public function add_cart($id, Request $request)
@@ -69,18 +69,25 @@ class CartController extends Controller
 
         $cart = Cart::where('id_user',$id_user->id)->where('id_product',$id)->first();
 
-        dd($cart);
-
         if($cart->count == 1){
             Cart::where('id',$cart->id)->delete();
         }
-        else{
-            
+        else{   
+            $id_product = Product::where('id',$id)->get()->first();     
+            $cart = Cart::where('id_product',$id_product->id)->where('id_user',$id_user->id)->get()->first();
+            $price = Product::where('id',$id)->get()->first();
+
+            $count = $cart->count - 1;
+            $summ = $cart->summ - $price->price;
 
             Cart::where('id',$cart->id)->update([
-                'count' => 1,
-                'summ' => 1
+                'count' => $count,
+                'summ' => $summ
             ]);
+
+            return response(json_encode([
+                'message' => 'Товар удален из корзины'
+            ]));
         }
     }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Http\Request;
@@ -31,6 +32,8 @@ Route::group(['middleware' => 'user'], function (){
     Route::post('/cart', [CartController::class, 'all']);
     Route::post('/add_cart/{id}', [CartController::class, 'add_cart']);
     Route::post('/del_cart/{id}', [CartController::class, 'del_cart']);
+    Route::post('/create_order', [OrderController::class, 'create_order']);
+    Route::post('/orders', [OrderController::class, 'all']);
 });
 
 Route::group(['middleware' => 'admin'], function (){
